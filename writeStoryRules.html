@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3SY8F9P01"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-Q3SY8F9P01');
+  </script>
+  <script>
+    // Strict redirect: prevent direct access & only allow from index
+    const ref = document.referrer.toLowerCase();
+    let isLegacyRules = false;
+    try {
+      const source = new URL(document.referrer);
+      isLegacyRules = source.origin === location.origin && /\/writeconfessionrules(?:\.html)?$/i.test(source.pathname);
+    } catch {}
+    const isFromIndex = ref.includes('index') || ref.endsWith('/') || isLegacyRules;
+    let fromStoryLink = false;
+    try {
+      const created = Number(sessionStorage.getItem('storyRulesEntry'));
+      sessionStorage.removeItem('storyRulesEntry');
+      fromStoryLink = created > 0 && Date.now() - created >= 0 && Date.now() - created <= 300000;
+    } catch {}
+    const permittedRefresh = ['reload', 'back_forward'].includes(performance.getEntriesByType('navigation')[0]?.type)
+      && history.state?.storyRulesAllowed;
+    if (!fromStoryLink && !permittedRefresh && (!ref || !isFromIndex)) {
+      window.location.href = 'index.html';
+    } else {
+      history.replaceState({ ...history.state, storyRulesAllowed: true }, '');
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Rules</title>
+  <meta name="description" content="Read the rules before submitting your story on Infy Stories.">
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" href="./res/logoBig-noBg.png" type="image/icon type">
+  <script src="script.js"></script>
+</head>
+
+<body oncontextmenu="return false">
+  <header>
+    <h1 onclick="location.href ='index.html';" class="logo">Infy Stories</h1>
+    <div class="nav-links" id="navLinks">
+      <ul>
+        <li onclick="location.href ='index.html';">Home</li>
+        <li onclick="location.href ='imageCollection.html';">Photos</li>
+        <li onclick="location.href ='aboutUs.html';">About Us</li>
+      </ul>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+    </div>
+
+  </header>
+
+  <section id="hero">
+    <img src="./res/hero-rules.webp" alt="Rules illustration">
+    <div class="left">
+      <h5>Available most of the time &#128517;</h5>
+      <h1 class="title">Read following Rules Before Writing a Story</h1>
+      <p class="descRules">
+        Hi, your story is anonymous feel free to share.<br><br>
+        1. Try to keep the story in english language.<br><br>
+        2. All the Queries related to our Organization, Hikes, Promotions &amp; Your Job offers etc.. should be asked in
+        our
+        <a style="text-decoration: none; color: var(--accent);" href="http://t.me/infy_stories">Telegram
+          Group</a>.<br><br>
+        Alternatively you can post your query anonymously in Telegram by clicking <a
+          style="text-decoration: none; color: var(--accent);" href="writeQuery.html">here</a><br><br>
+        3. Never write against our organization and it's policies.<br><br>
+        4. Do not abuse anyone.<br><br>
+        5. We don't want your Matrimonial Profile or Love Application. Please keep them with you !!!<br>
+        <br>
+        If your story is still not posted, DM us on our
+        <a style="text-decoration: none; color: var(--accent);" href="http://instagram.com/infy_stories">Instagram
+          handle.</a><br>
+        <br>
+        **All rights reserved with the admin.
+      </p>
+
+
+      <section class="ai-generation-notice" aria-labelledby="aiNoticeHeading">
+        <h2 id="aiNoticeHeading"><i class="fas fa-magic" aria-hidden="true"></i> AI Title Suggestions</h2>
+        <p>If <strong>&quot;Generate Titles for my story&quot;</strong> is selected, <strong>your story text is sent to Google Gemini</strong> to generate three title suggestions. Choose a title or submit without one before your story is sent. <strong>Title Generation and Selection are OPTIONAL</strong>.</p>
+        <p><mark>Do not include sensitive information, private contact details, or identifying details.</mark> Google processes the text under its <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer">Gemini API terms</a>, including the applicable free-tier data-use terms.</p>
+        <p>AI suggestions may be inaccurate. <strong>Review before choosing.</strong></p>
+        <p>By sliding to agree, you also consent to this processing when you choose title generation.</p>
+      </section>
+
+      <!-- ── Slide-to-Agree ── -->
+      <div class="agree-slider-wrap" id="agreeSliderWrap">
+        <p class="slider-hint">Slide to agree to the rules ➔</p>
+        <div class="agree-track-wrap">
+          <input type="range" id="agreeSlider" class="agree-slider" min="0" max="100" value="0"
+            aria-label="Slide to agree">
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const slider = document.getElementById('agreeSlider');
+          const wrap = document.getElementById('agreeSliderWrap');
+          window.continueToStoryForm = function () {
+            try {
+              sessionStorage.setItem('storyEditorEntry', JSON.stringify({ mode: 'user', created: Date.now() }));
+            } catch {}
+            window.location.href = 'write/new/';
+          };
+          let isAgreed = false;
+
+          slider.addEventListener('input', function () {
+            if (isAgreed) return;
+            const pct = this.value;
+            this.style.setProperty('--fill', pct + '%');
+
+            if (parseInt(pct) >= 95) {
+              isAgreed = true;
+              this.value = 100;
+              this.style.setProperty('--fill', '100%');
+              wrap.classList.add('agreed');
+              setTimeout(window.continueToStoryForm, 400);
+            }
+          });
+
+          // Bounce back if user releases slider before the end
+          slider.addEventListener('change', function () {
+            if (!isAgreed && this.value < 95) {
+              this.value = 0;
+              this.style.setProperty('--fill', '0%');
+            }
+          });
+        })();
+      </script>
+
+    </div>
+
+  </section>
+
+  <footer>
+    <div class="card">
+      <div class="icon">
+        <i class="fas fa-map-marker-alt"></i>
+      </div>
+      <div class="content">
+        <h3>Where are we 🐱‍💻 </h3>
+        <p>Available on
+          <a class="socialmedia" href="http://instagram.com/infy_stories">Instagram</a>
+          &amp;
+          <a class="socialmedia" href="http://t.me/infy_stories">Telegram</a>
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="icon">
+        <i class="fas fa-code"></i>
+      </div>
+      <div class="content">
+        <h3>Clean Story</h3>
+        <p>Do not write offensive stories which may hurt fellow users</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="credit-bar">
+    <a href="https://www.linkedin.com/in/upendra-thunuguntla/">Designed and Developed by @Upendra-Thunuguntla</a>
+  </div>
+</body>
+
+</html>

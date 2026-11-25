@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Infy Stories</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="icon" href="res/logoBig-noBg.png" type="image/icon type">
+  <script defer src="script.js"></script>
+  <script defer src="admin.js"></script>
+</head>
+<body>
+  <header>
+    <h1 onclick="location.href='index.html'" class="logo">Infy Stories</h1>
+    <div class="nav-links">
+      <ul><li onclick="location.href='index.html'">Home</li></ul>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+  <main class="admin-page">
+    <section class="admin-login admin-card" id="adminLoginView">
+      <p class="admin-eyebrow">INFY STORIES / ADMIN</p>
+      <h2>Admin access</h2>
+      <p>Enter the admin key to open the control room.</p>
+      <form id="adminLoginForm">
+        <label for="adminKey">Secret key</label>
+        <div class="admin-password-wrap">
+          <input id="adminKey" name="password" type="password" autocomplete="current-password" required>
+          <button type="button" class="admin-password-reveal" id="adminPasswordReveal" aria-label="Show admin key" aria-pressed="false" title="Show admin key">
+            <i class="fas fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button class="btn btn-primary" type="submit" id="adminLoginButton"><i class="fas fa-unlock-alt" aria-hidden="true"></i><span>Unlock</span></button>
+        <p class="admin-message" id="adminLoginMessage" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <section id="adminPanelView" hidden>
+      <div class="admin-heading">
+        <div>
+          <p class="admin-eyebrow">INFY STORIES / ADMIN</p>
+          <h2>Control room</h2>
+          <p>Manage submissions and keep the stories flowing.</p>
+        </div>
+        <div class="admin-heading-actions">
+          <button type="button" class="admin-refresh" id="adminRefresh" aria-label="Refresh dashboard" title="Refresh dashboard"><i class="fas fa-sync-alt" aria-hidden="true"></i></button>
+          <button type="button" class="admin-logout" id="adminLogout">Lock admin</button>
+        </div>
+      </div>
+      <p class="admin-message" id="adminActionMessage" role="status" aria-live="polite"></p>
+      <div class="admin-grid">
+        <section class="admin-card admin-overview">
+          <h3>Overview</h3>
+          <dl class="admin-stats" id="adminStats" aria-live="polite"></dl>
+          <p class="admin-footnote">Daily counts roll over automatically at midnight India time.</p>
+          <div class="admin-actions">
+            <button type="button" class="btn btn-primary" id="adminWriteStory"><i class="fas fa-pen" aria-hidden="true"></i><span>Write story</span></button>
+            <button type="button" class="btn btn-secondary" id="adminToggleForm"><i class="fas fa-toggle-on" aria-hidden="true"></i><span>Change form status</span></button>
+            <button type="button" class="btn btn-secondary" id="adminClearIps"><i class="fas fa-broom" aria-hidden="true"></i><span>Clear IP cooldowns</span></button>
+          </div>
+          <p class="admin-footnote">IP cooldown clearing applies to the current running API instance.</p>
+        </section>
+        <div class="admin-secondary">
+          <details class="admin-card admin-disclosure" id="instagramSection">
+            <summary>Instagram sequence</summary>
+            <p class="admin-card-description">Set the last allocated number. Existing jobs keep their numbers.</p>
+            <button type="button" class="admin-section-refresh" id="instagramRefresh">Refresh sequence</button>
+            <form id="instagramNumberForm">
+              <label for="instagramNumber" id="instagramNumberLabel">Current number: loading...</label>
+              <div class="instagram-number-control">
+                <button type="button" id="instagramDecrease" aria-label="Decrease Instagram number" disabled>-</button>
+                <input id="instagramNumber" name="currentNumber" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" placeholder="Enter a number" required disabled>
+                <button type="button" id="instagramIncrease" aria-label="Increase Instagram number" disabled>+</button>
+              </div>
+              <p class="admin-footnote" id="instagramNextNumber"></p>
+              <button class="btn btn-secondary" id="instagramSave" type="submit" disabled>Update sequence</button>
+            </form>
+            <p class="admin-message" id="instagramMessage" role="status" aria-live="polite"></p>
+          </details>
+          <details class="admin-card admin-history admin-disclosure" id="storyHistorySection">
+            <summary>Daily story history</summary>
+            <p class="admin-card-description">Submission counts by date, India time. Days without submissions may be omitted.</p>
+            <div class="admin-date-range">
+              <label for="storyHistoryFrom">From<input type="date" id="storyHistoryFrom"></label>
+              <label for="storyHistoryTo">To<input type="date" id="storyHistoryTo"></label>
+              <div class="admin-date-actions">
+                <button type="button" class="admin-section-refresh" id="storyHistoryApply">Apply dates</button>
+                <button type="button" class="admin-section-refresh" id="storyHistoryAll">All dates</button>
+              </div>
+            </div>
+            <button type="button" class="admin-section-refresh" id="storyHistoryRefresh">Refresh story history</button>
+            <p class="admin-message" id="historyMessage" role="status" aria-live="polite"></p>
+            <div class="admin-table-wrap" tabindex="0" role="region" aria-label="Scrollable daily story history">
+              <table><thead><tr><th scope="col">Date</th><th scope="col">Stories</th></tr></thead><tbody id="historyRows"></tbody></table>
+            </div>
+          </details>
+          <details class="admin-card admin-history admin-disclosure" id="queryHistorySection">
+            <summary>Daily query history</summary>
+            <p class="admin-card-description">Submitted queries by date, India time. Days without submissions may be omitted.</p>
+            <div class="admin-date-range">
+              <label for="queryHistoryFrom">From<input type="date" id="queryHistoryFrom"></label>
+              <label for="queryHistoryTo">To<input type="date" id="queryHistoryTo"></label>
+              <div class="admin-date-actions">
+                <button type="button" class="admin-section-refresh" id="queryHistoryApply">Apply dates</button>
+                <button type="button" class="admin-section-refresh" id="queryHistoryAll">All dates</button>
+              </div>
+            </div>
+            <button type="button" class="admin-section-refresh" id="queryHistoryRefresh">Refresh query history</button>
+            <p class="admin-message" id="queryHistoryMessage" role="status" aria-live="polite"></p>
+            <div class="admin-table-wrap" tabindex="0" role="region" aria-label="Scrollable daily query history">
+              <table><thead><tr><th scope="col">Date</th><th scope="col">Queries</th></tr></thead><tbody id="queryHistoryRows"></tbody></table>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
