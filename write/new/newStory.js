@@ -6,7 +6,7 @@
     const STORY_FONT_SIZE = 42;
     const NORMAL_STORY_LIMIT = 2000;
     const SLIDES_PER_UPLOAD = 10;
-    const API_ROOT = 'https://jarvis-ihcp.vercel.app/api';
+    const API_ROOT = 'https://infy-stories-backend.vercel.app/api';
     const DARK_THEME_TEXT = '#F5F1E8';
     const LIGHT_THEME_TEXT = '#292725';
 

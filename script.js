@@ -1,4 +1,4 @@
-var host = "https://jarvis-ihcp.vercel.app"
+var host = "https://infy-stories-backend.vercel.app"
 
 const maxChars = 2000;
 const SUBMISSION_COOLDOWN_MS = 5 * 60 * 1000;
