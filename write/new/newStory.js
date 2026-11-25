@@ -700,7 +700,7 @@
                 if (response.status === 401 && adminEntry) {
                     sessionStorage.removeItem('infy:adminKey');
                     sessionStorage.setItem('infy:adminPrompt', '1');
-                    window.location.href = '../../index.html';
+                    window.location.href = '../../admin.html';
                 }
                 throw Object.assign(new Error(result.error || 'Request failed. Please try again later.'), { httpStatus: response.status, reason: result.reason });
             }
@@ -1013,7 +1013,10 @@
                 snapshot.completedBatches = (snapshot.completedBatches || 0) + 1;
                 uploadToken = result.nextUploadToken || '';
                 if (batchIndex < batchCount - 1 && !uploadToken) throw new Error('Story submission failed.');
-                if (batchIndex === batchCount - 1) snapshot.submissionToken = result.submissionToken;
+                if (batchIndex === batchCount - 1) {
+                    snapshot.submissionToken = result.submissionToken;
+                    snapshot.warning = result.warning;
+                }
                 if (batchIndex < batchCount - 1) setSubmittingMessage('Preparing the next batch...');
             }
 
@@ -1021,6 +1024,9 @@
             storyCompose.hidden = true;
             submitControls.hidden = true;
             submissionSuccess.hidden = false;
+            const submissionWarning = document.getElementById('submissionWarning');
+            submissionWarning.textContent = snapshot.warning || '';
+            submissionWarning.hidden = !snapshot.warning;
             snapshot.storySent = true;
             if (!isAdmin) markSubmissionSuccessful('story');
             snapshot.sending = false;
@@ -1042,7 +1048,7 @@
             snapshot.sending = false;
             const uncertainDelivery = !snapshot.intent && snapshot.uploadAttempted
                 && (snapshot.completedBatches || !error.httpStatus || error.httpStatus >= 500);
-            submitStatus.textContent = 'Story submission failed.';
+            submitStatus.textContent = error.message || 'Story submission failed.';
             submitButton.disabled = Boolean(uncertainDelivery);
             submitButton.classList.remove('btn-disabled');
             submitButton.textContent = 'Submit Story';

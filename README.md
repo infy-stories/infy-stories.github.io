@@ -1,10 +1,10 @@
 ## Infosys Hyderabad Story Page
 
 Stories are rendered in [the frontend editor](write/new/index.html) and uploaded
-as ordered JPEG batches to `/api/postConfession`. The old
-[story URL](writeConfession.html) redirects through the rules page to that editor;
-the legacy JSON `/postConfession` submission and server-side story renderer are
-retired.
+as ordered JPEG batches to `/api/postConfession`. The [story rules](writeStoryRules.html)
+lead to the editor; the old [story URL](writeConfession.html) and
+[rules URL](writeConfessionRules.html) redirect to the current rules page.
+The legacy JSON `/postConfession` submission and server-side story renderer are retired.
 
 ### Special Story Themes
 
@@ -41,7 +41,16 @@ Management API where the browser supports it, so compatible password managers
 can save and autofill the key.
 No key should be added to frontend source or committed files.
 
-The admin panel can compose a story, check form and cooldown counts, toggle form
-availability, reset the daily counter, and clear the current Vercel instance's
-in-memory IP cooldown dictionaries. Cooldown dictionaries are not shared across
-serverless instances, so clearing them is best-effort rather than a global reset.
+The dedicated admin page can compose a story, check form and cooldown counts,
+view daily story and query history, toggle form availability, edit the last allocated
+Instagram sequence number, and clear the current Vercel instance's in-memory IP
+cooldown dictionaries. Daily counts roll over automatically at midnight India
+time; there is no manual reset. Lowering the Instagram sequence can reuse numbers
+already assigned to posts. Cooldown dictionaries are not shared across serverless
+instances, so clearing them is best-effort rather than a global reset.
+The Instagram sequence can be typed or adjusted with the minus and plus buttons;
+changes are sent only after confirmation.
+The history and Instagram sections load only when opened; their refresh buttons
+request fresh data without reloading the other sections. Story and query histories
+default to the latest seven India-time dates. Set inclusive From/To dates and
+select Apply dates to fetch that range, or use All dates to fetch the full history.

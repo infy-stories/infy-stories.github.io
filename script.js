@@ -302,11 +302,11 @@ function fetchFormStatus() {
 
 function prefetchFormStatus() {
     window.choiceFormStatusPromise = fetchFormStatus();
-    // Mark handled; writeConfession still sees the rejection.
+    // Mark handled; writeStory still sees the rejection.
     window.choiceFormStatusPromise.catch(() => {});
 }
 
-function writeConfession() {
+function writeStory() {
     if (!checkSubmissionCooldown('story')) return;
     // Add loading visuals
     const storyBtn = document.getElementById("story");
@@ -359,11 +359,11 @@ function openStoryRules() {
     try {
         sessionStorage.setItem('storyRulesEntry', String(Date.now()));
     } catch {}
-    window.location.href = 'writeConfessionRules.html';
+    window.location.href = 'writeStoryRules.html';
 }
 
 function chooseLatestExperience() {
-    writeConfession();
+    writeStory();
 }
 
 function json(url) {

@@ -23,7 +23,7 @@
         const source = new URL(document.referrer);
         const path = source.pathname.replace(/\/+$/, '').toLowerCase();
         if (source.origin === location.origin) {
-          if (/(^|\/)writeconfessionrules(?:\.html)?$/.test(path)) entryMode = 'user';
+          if (/(^|\/)(?:writestoryrules|writeconfessionrules)(?:\.html)?$/.test(path)) entryMode = 'user';
         }
       } catch {}
     }
@@ -151,6 +151,7 @@
       <section class="submission-success" id="submissionSuccess" hidden aria-live="polite" tabindex="-1">
         <h3>Story submitted successfully.</h3>
         <p>Your story has been received.</p>
+        <p id="submissionWarning" hidden></p>
       </section>
 
       <div class="story-submit-controls">
